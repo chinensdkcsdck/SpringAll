@@ -13,6 +13,13 @@ public class IPUtils {
 	public static String getIpAddr(HttpServletRequest request) {
 
 		String ip = request.getHeader("x-forwarded-for");
+		if (ip != null && ip.length() != 0) {
+			// x-forwarded-for can be a comma-separated list: client, proxy1, proxy2...
+			int commaIndex = ip.indexOf(',');
+			if (commaIndex > 0) {
+				ip = ip.substring(0, commaIndex).trim();
+			}
+		}
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getHeader("Proxy-Client-IP");
 		}
